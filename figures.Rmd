@@ -1,0 +1,117 @@
+---
+title: "Graphs"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+setwd('C:\\Users\\rober\\Documents\\GitHub\\arestynullsubjects') # run with Ctrl + Enter
+library(tidyverse)  # ggplot2, dplyr, tidyr, readr, purr, tiblle, stringr, forcats
+
+# L2 speaker data
+L2 = read_delim('aresty_L2_dataframe.csv', delim = ',') 
+View(L2)
+# heritage speaker data
+H = read_delim('aresty_heritage_df.csv', delim = ',')
+View(H)
+# L2 + heritage
+L2H = rbind(L2, H)
+view(L2H)
+
+
+###
+
+library(ggplot2)
+library(grid)
+
+#monolingual data graphed for heritage & L2 speakers
+mono = ggplot(data=L2H, aes(x=mono, y=besasp_total, color=heritage_, shape=heritage_)) +
+  geom_smooth(method="lm", se=FALSE) +
+  geom_point(size=5) +
+  labs(title="L2 Caretakers' Perceptions (mono) vs Child's BESA score", x="Parent's perception against monolinguals", y="Child's BESA score", shape="heritage?") +  
+  scale_y_continuous(breaks = round(seq(min(0), max(10), by = 1),1)) +
+  xlim(0,5) +
+  scale_color_manual(name=NULL,
+                     labels = c("L2", "Heritage"),
+                     values = c("blue", "red")) +
+  scale_shape_manual(name=NULL,
+                     labels = c("L2", "Heritage"),
+                     values = c(1,2))
+
+mono + annotate(x=1.5, y=1.5, 
+              label=paste("R value of L2 = ", round(cor(L2$mono, L2$besasp_total),2)), 
+              geom="text", size=5) +
+  annotate(x=1.5, y=0, 
+           label=paste("R value of heritage = ", round(cor(H$mono, H$besasp_total),2)), 
+           geom="text", size=5)
+
+#bilingual data graphed for heritage & L2 speakers
+bi = ggplot(data=L2H, aes(x=bi, y=besasp_total, color=heritage_, shape=heritage_)) +
+  geom_smooth(method="lm", se=FALSE) +
+  geom_point(size=5) +
+  labs(title="L2 Caretakers' Perceptions (bi) vs Child's BESA score", x="Parent's perception against bilinguals", y="Child's BESA score", shape="heritage?") +  
+  scale_y_continuous(breaks = round(seq(min(0), max(10), by = 1),1)) +
+  xlim(0,5) +
+  scale_color_manual(name=NULL,
+                     labels = c("L2", "Heritage"),
+                     values = c("blue", "red")) +
+  scale_shape_manual(name=NULL,
+                     labels = c("L2", "Heritage"),
+                     values = c(1,2))
+
+bi + annotate(x=1.5, y=1.5, 
+              label=paste("R value of L2 = ", round(cor(L2$bi, L2$besasp_total),2)), 
+              geom="text", size=5) +
+  annotate(x=1.5, y=0, 
+           label=paste("R value of heritage = ", round(cor(H$bi, H$besasp_total),2)), 
+           geom="text", size=5)
+
+###
+
+#t tests comparing heritage&L2 caretaker ratings
+
+#L2 df without duplications
+L2_undup = L2[ !duplicated(L2$participant),]
+view(L2_undup)
+
+#heritage df without duplications
+H_undup = H[ !duplicated(H$participant),]
+view(H_undup)
+
+#do the heritage parents & L2 parents differ in how they rate their children compared to monolinguals?
+ttest = t.test(H_undup$mono,L2_undup$mono)
+ttest
+
+#do the heritage & L2 parents differ in how they rate their childrne compared to bilinguals?
+ttest2 = t.test(H_undup$bi, L2_undup$bi)
+ttest2
+
+###
+
+#unduplicated L2 + H dataframe
+
+L2H_undup = rbind(L2_undup, H_undup)
+view(L2H_undup)
+
+#histogram plot for heritage vs L2 parent scores monolingual
+
+histo_mono = ggplot(L2H_undup, aes(x=mono, fill=heritage_)) +
+  geom_histogram() +
+  labs(fill="heritage?", x="proficiency compared to monolingual", title="Heritage vs L2 Children's proficiency scores compared to monolinguals")
+
+#histogram plot for heritage vs L2 parent scores bilingual
+
+histo_bi = ggplot(L2H_undup, aes(x=bi, fill=heritage_)) +
+  geom_histogram() +
+  labs(fill="heritage?", x="proficiency compared to bilingual", title="Heritage vs L2 Children's proficiency scores compared to monolinguals")
+```
+
+mono
+bi
+
+histo_bi
+histo_mono
