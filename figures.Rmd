@@ -32,17 +32,16 @@ library(grid)
 mono = ggplot(data=L2H, aes(x=mono, y=besasp_total, color=heritage_, shape=heritage_)) +
   geom_smooth(method="lm", se=FALSE) +
   geom_point(size=5) +
-  labs(title="L2 Caretakers' Perceptions (mono) vs Child's BESA score", x="Parent's perception against monolinguals", y="Child's BESA score", shape="heritage?") +  
+  labs(title="L2 Caretakers' Perceptions (mono) vs Child's BESA score", x="Caretaker's perception against monolinguals", y="Child's BESA score", shape="heritage?") +  
   scale_y_continuous(breaks = round(seq(min(0), max(10), by = 1),1)) +
   xlim(0,5) +
   scale_color_manual(name=NULL,
                      labels = c("L2", "Heritage"),
-                     values = c("blue", "red")) +
+                     values = c("red", "blue")) +
   scale_shape_manual(name=NULL,
                      labels = c("L2", "Heritage"),
-                     values = c(1,2))
-
-mono + annotate(x=1.5, y=1.5, 
+                     values = c(1,2)) +
+  annotate(x=1.5, y=1.5, 
               label=paste("R value of L2 = ", round(cor(L2$mono, L2$besasp_total),2)), 
               geom="text", size=5) +
   annotate(x=1.5, y=0, 
@@ -53,17 +52,16 @@ mono + annotate(x=1.5, y=1.5,
 bi = ggplot(data=L2H, aes(x=bi, y=besasp_total, color=heritage_, shape=heritage_)) +
   geom_smooth(method="lm", se=FALSE) +
   geom_point(size=5) +
-  labs(title="L2 Caretakers' Perceptions (bi) vs Child's BESA score", x="Parent's perception against bilinguals", y="Child's BESA score", shape="heritage?") +  
+  labs(title="L2 Caretakers' Perceptions (bi) vs Child's BESA score", x="Caretaker's perception against bilinguals", y="Child's BESA score", shape="heritage?") +  
   scale_y_continuous(breaks = round(seq(min(0), max(10), by = 1),1)) +
   xlim(0,5) +
   scale_color_manual(name=NULL,
                      labels = c("L2", "Heritage"),
-                     values = c("blue", "red")) +
+                     values = c("red", "blue")) +
   scale_shape_manual(name=NULL,
                      labels = c("L2", "Heritage"),
-                     values = c(1,2))
-
-bi + annotate(x=1.5, y=1.5, 
+                     values = c(1,2)) +
+  annotate(x=1.5, y=1.5, 
               label=paste("R value of L2 = ", round(cor(L2$bi, L2$besasp_total),2)), 
               geom="text", size=5) +
   annotate(x=1.5, y=0, 
@@ -101,17 +99,31 @@ view(L2H_undup)
 
 histo_mono = ggplot(L2H_undup, aes(x=mono, fill=heritage_)) +
   geom_histogram() +
-  labs(fill="heritage?", x="proficiency compared to monolingual", title="Heritage vs L2 Children's proficiency scores compared to monolinguals")
+  labs(fill="heritage?", x="proficiency compared to monolingual", title="Heritage vs L2 Children's Proficiency Scores Compared to Monolinguals")
 
 #histogram plot for heritage vs L2 parent scores bilingual
 
 histo_bi = ggplot(L2H_undup, aes(x=bi, fill=heritage_)) +
   geom_histogram() +
-  labs(fill="heritage?", x="proficiency compared to bilingual", title="Heritage vs L2 Children's proficiency scores compared to monolinguals")
+  labs(fill="heritage?", x="proficiency compared to bilingual", title="Heritage vs L2 Children's Proficiency Scores Compared to Bilinguals")
 ```
 
+```
+ggsave("mono.png", mono)
+
+ggsave("bi.png", bi)
+
+ggsave("histo_bi.png", histo_bi)
+
+ggsave("histo_mono.png", histo_mono)
+```
+
+```
 mono
+
 bi
 
 histo_bi
+
 histo_mono
+
